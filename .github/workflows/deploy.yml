@@ -1,0 +1,36 @@
+name: Deploy to EKS with Kustomize
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Update Kubeconfig
+        run: |
+          aws eks update-kubeconfig --name advanced-kustomize-cluster --region eu-north-1
+
+      - name: Deploy using Kustomize (Production)
+        run: |
+          kubectl apply -k overlays/production
+          kubectl rollout status deployment/kustomize-app
