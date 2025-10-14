@@ -1,0 +1,6 @@
+bases:
+  - ../../base
+
+patchesStrategicMerge:
+  - image-tag-patch.yaml
+
