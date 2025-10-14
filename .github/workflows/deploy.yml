@@ -32,5 +32,7 @@ jobs:
 
       - name: Deploy using Kustomize (Production)
         run: |
+          cd advanced-kustomize-aws
           kubectl apply -k overlays/production
           kubectl rollout status deployment/kustomize-app
+
